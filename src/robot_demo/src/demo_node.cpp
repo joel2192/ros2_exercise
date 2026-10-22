@@ -10,54 +10,50 @@ using namespace std::chrono_literals;
 class DemoNode : public rclcpp::Node
 {
 public:
-    DemoNode()
-    : Node("demo_node"), count_(0)
-    {
-        publisher_ = this->create_publisher<std_msgs::msg::String>(
-            "chatter",
-            10
-        );
+  DemoNode()
+      : Node("demo_node"), count_(0)
+  {
+    publisher_ = this->create_publisher<std_msgs::msg::String>(
+        "chatter",
+        rclcpp::QoS(10).best_effort());
 
-        timer_ = this->create_wall_timer(
-            1s,
-            std::bind(&DemoNode::timer_callback, this)
-        );
-    }
+    timer_ = this->create_wall_timer(
+        1s,
+        std::bind(&DemoNode::timer_callback, this));
+  }
 
 private:
-    void timer_callback()
-    {
-        auto message = std_msgs::msg::String();
+  void timer_callback()
+  {
+    auto message = std_msgs::msg::String();
 
-        message.data = "Hello ROS2: " + std::to_string(count_);
+    message.data = "Hello ROS2: " + std::to_string(count_);
 
-        publisher_->publish(message);
+    publisher_->publish(message);
 
-        RCLCPP_INFO(
-            this->get_logger(),
-            "Published: '%s'",
-            message.data.c_str()
-        );
+    RCLCPP_INFO(
+        this->get_logger(),
+        "Published: '%s'",
+        message.data.c_str());
 
-        count_++;
-    }
+    count_++;
+  }
 
-    rclcpp::Publisher<std_msgs::msg::String>::SharedPtr publisher_;
-    rclcpp::TimerBase::SharedPtr timer_;
+  rclcpp::Publisher<std_msgs::msg::String>::SharedPtr publisher_;
+  rclcpp::TimerBase::SharedPtr timer_;
 
-    int count_;
+  int count_;
 };
 
-
-int main(int argc, char * argv[])
+int main(int argc, char *argv[])
 {
-    rclcpp::init(argc, argv);
+  rclcpp::init(argc, argv);
 
-    auto node = std::make_shared<DemoNode>();
+  auto node = std::make_shared<DemoNode>();
 
-    rclcpp::spin(node);
+  rclcpp::spin(node);
 
-    rclcpp::shutdown();
+  rclcpp::shutdown();
 
-    return 0;
+  return 0;
 }

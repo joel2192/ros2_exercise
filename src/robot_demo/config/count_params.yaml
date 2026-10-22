@@ -1,0 +1,7 @@
+/robot1/count_server:
+  ros__parameters:
+    count_delay: 1.0
+
+/robot2/count_server:
+  ros__parameters:
+    count_delay: 0.2
